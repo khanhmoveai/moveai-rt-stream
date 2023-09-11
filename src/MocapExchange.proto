@@ -1,0 +1,151 @@
+syntax = "proto3";
+
+// Package for the markerless motion capture system.
+package Mocap;
+
+// Service that provides real-time motion capture streaming.
+service MocapServer{
+    // RPC to get the skeleton structure of a motion capture human subject
+    // It encodes the hierarchy of the skeleton, bone lengths and the rest pose of the skeleton.
+    // Should be only called once for each actor being tracked.
+    rpc GetStructure(StructureRequest)   returns (StructureResponse){}
+
+    // RPC to get the motion capture data stream
+    // The stream encodes the motion stream [joint angles in local space] of multiple subjects.
+    // After a new subject is detected on the stream data, the API GetStructure should be called to get the skeleton structure of the subject.
+    rpc GetMocapStream(MocapStreamRequest) returns (stream MocapStreamResponse){}
+}
+
+// Representation of a 3D translation.
+message Translation
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+// Representation of orientation using different rotation types.
+message Orientation{
+    // Enumerates the types of rotation representations supported.
+    enum RotationType {
+        QUATERNION = 0;
+        MATRIX = 1;
+        EULER_XYZ = 2;
+        EULER_XZY = 3;
+        EULER_YXZ = 4;
+        EULER_YZX = 5;
+        EULER_ZXY = 6;
+        EULER_ZYX = 7;
+        EULER_XY = 8;
+        EULER_YX = 9;
+        EULER_XZ = 10;
+        EULER_ZX = 11;
+        EULER_YZ = 12;
+        EULER_ZY = 13;
+        EULER_X = 14;
+        EULER_Y = 15;
+        EULER_Z = 16;
+    }
+    RotationType rotationType = 1; // Specifies the type of rotation used.
+    repeated float rotationValues = 2; // Values associated with the rotation type.
+}
+
+// Combines Translation and Orientation to define a Transform.
+message Transform {
+    Translation translation = 1;
+    Orientation orientation = 2;
+}
+
+
+////////////////////////////////////
+// Information for each link in the motion capture structure.
+message Link {
+    string name = 1; // Name of the link.
+    uint32 linkId = 2; // Unique ID for this link.
+    int32 parentLinkId = 3; // ID of the parent link.
+    Transform offset = 4; //// Relative offset from this link to its parent.
+    float mass = 5; // Mass of the link. [not implemented yet].
+    repeated float linkSize = 6;  // Dimensions of the link. [not implemented yet]
+    repeated float inertialMatrix = 7; // Inertial properties of the link [not implemented yet].
+}
+
+// Metadata for each joint in the motion capture structure.
+message JointMeta {
+    uint32 jointId = 1; // Unique ID for this joint.
+    uint32 linkId = 2;  // ID of the link this joint is attached to.
+    string name = 3;  // Name of the joint.
+}
+
+// Represents the structure of an entity in the motion capture system.
+message Structure {
+    uint32 structureId = 1; // Unique ID for this structure.
+    StructureType structureType = 2; // Type of the structure (e.g., Human, Ball).
+    string name = 3;
+    repeated Link links = 4; // Name of the structure.
+    repeated JointMeta joints = 5; // List of joints in the structure.
+}
+
+///////////////////////////////////////
+// Data representation of a joint in a specific frame.
+// It represents the per-frame data streaming over GetMocapStream
+message Joint {
+    uint32 jointId = 1;
+    Transform transform = 2;
+}
+
+// Represents the pose of an entity at a specific timestamp.
+// `joints` are local joint angles
+// `globalJoints` are 3D cartesian coordinates for the joints
+message Pose {
+    uint32 subjectId = 1;
+    uint64 timestamp = 2;
+    repeated Joint joints = 3;
+    repeated Joint globalJoints = 4;
+}
+
+
+// Request for streaming mocap data at a specific frame rate.
+message MocapStreamRequest {
+    float fps = 1;
+}
+
+// Response stream for motion capture data.
+// `MocapStreamResponse` is used to communicate with Unreal Engine
+message MocapStreamResponse {
+    repeated Pose poses = 1; // Poses captured in this frame.
+    float serverTime = 2; // Server time when this response was sent.
+    optional uint64 mocapServerTimestamp=3; // Exact timestamp of the mocap data.
+}
+
+// Request for specific structure data based on their IDs.
+// the field structureId is the unique ID of the structure. It is the field structureId in Structure.
+// Pose->subjectId == Structure->structureId
+message StructureRequest{
+    repeated uint32 structureId = 1;
+}
+
+message StructureResponse {
+    repeated Structure structures = 1; // The structures associated with the requested IDs.
+}
+
+// A single frame of data for an actor's state.
+message ActorStateFrame {
+    Pose pose = 1;
+}
+
+// Represents an actor's state across multiple frames.
+// Used currently for exporting the recorded data
+message ActorStateFramesRecord {
+    int32 trackID=1;
+    Structure actorModel=2;
+    repeated Pose frames=3;
+}
+
+// Enumeration of supported structure types.
+enum StructureType {
+        HUMAN = 0;
+        BALL=1;
+        BIKE = 2;
+}
+
+
