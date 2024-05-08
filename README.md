@@ -25,7 +25,7 @@ in Unity, UE or any 3rd applications.
 ```
 conda create -n mvai-rt python=3.8
 conda activate mvai-rt
-pip install PySide6 PySide6-Addons grpcio grpcio-tools pyyaml open3d
+pip install PySide6 PySide6-Addons grpcio grpcio-tools pyyaml open3d scipy
 ```
 
 ## Generate proto files

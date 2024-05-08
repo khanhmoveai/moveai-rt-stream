@@ -40,10 +40,11 @@ def get_mocap_stream(stub):
     try:
         frm_cnt = 0
         for response in responses:
-            if response is not None:
-                ts_ms = time.clock_gettime_ns(time.CLOCK_REALTIME) / 1000000
-                dt = ts_ms - response.mocapServerTimestamp
-                print(f'stream latency: {response.mocapServerTimestamp}, {ts_ms}, {dt}')
+            # Commented code doesn't work in Windows
+            #if response is not None:
+                #ts_ms = time.clock_gettime_ns(time.CLOCK_REALTIME) / 1000000
+                #dt = ts_ms - response.mocapServerTimestamp
+                #print(f'stream latency: {response.mocapServerTimestamp}, {ts_ms}, {dt}')
             print(f"Received frame {frm_cnt}. n_poses = {len(response.poses)}")
             frm_cnt += 1
             for pose in response.poses:

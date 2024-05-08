@@ -7,6 +7,8 @@ import grpc
 import MocapExchange_pb2
 import MocapExchange_pb2_grpc
 
+import argparse
+
 def get_structure(stub, actor_id):
     try:
         request = MocapExchange_pb2.StructureRequest(
@@ -226,7 +228,13 @@ class GRPCMocapVis:
         while self.is_running:
             self.update()
 
-if __name__ == '__main__':
+def parse_args():
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--ip', type=str, default='192.168.0.153')
+    return parser.parse_args()
 
-    vis = GRPCMocapVis()
+if __name__ == '__main__':
+    args = parse_args()
+
+    vis = GRPCMocapVis(ip=args.ip)
     vis.start_update_loop()

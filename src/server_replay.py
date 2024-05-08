@@ -36,11 +36,11 @@ class MocapServerServicer(MocapExchange_pb2_grpc.MocapServerServicer):
         return response
 
 
-def serve(data_path: Path):
+def serve(args):
     print('Starting gRPC Python server')
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    MocapExchange_pb2_grpc.add_MocapServerServicer_to_server(MocapServerServicer(data_path), server)
-    server.add_insecure_port('0.0.0.0:54321')
+    MocapExchange_pb2_grpc.add_MocapServerServicer_to_server(MocapServerServicer(args.input), server)
+    server.add_insecure_port(f'{args.ip}:54321')
     server.start()
     server.wait_for_termination()
 
@@ -48,10 +48,11 @@ def serve(data_path: Path):
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-i', '--input', type=str)
+    parser.add_argument('--ip', type=str, default='192.168.0.153')
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     logging.basicConfig()
     args = parse_args()
-    serve(args.input)
+    serve(args)
