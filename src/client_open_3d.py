@@ -230,7 +230,7 @@ class GRPCMocapVis:
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--ip', type=str, default='192.168.0.153')
+    parser.add_argument('--ip', type=str, default='0.0.0.0')
     return parser.parse_args()
 
 if __name__ == '__main__':
