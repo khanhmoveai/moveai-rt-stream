@@ -48,7 +48,7 @@ def serve(args):
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-i', '--input', type=str)
-    parser.add_argument('--ip', type=str, default='0.0.0.0.153')
+    parser.add_argument('--ip', type=str, default='0.0.0.0')
     return parser.parse_args()
 
 
