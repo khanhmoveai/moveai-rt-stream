@@ -127,6 +127,7 @@ Window {
 
     Component.onCompleted: {
         puller.newActorCreated.connect(onNewActorCreated)
+        pullTimer.interval = 1000.0/puller.getPollFps()
         puller.start()
         pullTimer.start()
     }

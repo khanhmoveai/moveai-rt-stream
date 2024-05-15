@@ -12,15 +12,18 @@ from typing import Dict
 
 
 class MocapServerServicer(MocapExchange_pb2_grpc.MocapServerServicer):
-    def __init__(self, data_path: Path):
+    def __init__(self, data_path: Path, fps: float = 60):
         self.mocap_stream = MocapExchange_resources.read_frame_data_pkl(str(data_path)) # list type
         self.id_2_structures: Dict[int, MocapExchange_pb2.Structure] = MocapExchange_resources.read_structure_data_pkl(str(data_path))
+        self.fps = fps
+        self.repeat_count = 1000
 
     def GetMocapStream(self, request, context):
         # print(request)
-        times_to_repeat = 100
+        times_to_repeat = self.repeat_count
+        sleep_time = 1.0/self.fps
         for response in (self.mocap_stream * times_to_repeat):
-            time.sleep(1/30)
+            time.sleep(sleep_time)
             yield response
 
     def GetStructure(self, request, context):
@@ -39,7 +42,7 @@ class MocapServerServicer(MocapExchange_pb2_grpc.MocapServerServicer):
 def serve(args):
     print('Starting gRPC Python server')
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    MocapExchange_pb2_grpc.add_MocapServerServicer_to_server(MocapServerServicer(args.input), server)
+    MocapExchange_pb2_grpc.add_MocapServerServicer_to_server(MocapServerServicer(args.input, fps=args.fps), server)
     server.add_insecure_port(f'{args.ip}:54321')
     server.start()
     server.wait_for_termination()
@@ -49,6 +52,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-i', '--input', type=str)
     parser.add_argument('--ip', type=str, default='0.0.0.0')
+    parser.add_argument('--fps', type=int, default=60)
     return parser.parse_args()
 
 

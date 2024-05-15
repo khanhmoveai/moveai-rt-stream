@@ -13,11 +13,12 @@ import argparse
 
 QML_IMPORT_NAME = "com.mocap"
 QML_IMPORT_MAJOR_VERSION = 1
-QML_IMPORT_MINOR_VERSION = 0 # Optional
+QML_IMPORT_MINOR_VERSION = 0  # Optional
 
 @QmlElement
 class ActorsDrawDataPuller(QObject):
     newActorCreated = Signal(str, arguments=['subjectId'])
+    fps = 60
 
     @Slot()
     def start(self):
@@ -49,6 +50,9 @@ class ActorsDrawDataPuller(QObject):
             m_joints[model.joints[j_idx].name] = j_idx
         return m_joints
 
+    @Slot(result='QVariant')
+    def getPollFps(self):
+        return self.fps
     @Slot(result='QVariant')
     def tryPull(self):
         try:
@@ -120,11 +124,13 @@ class ActorsDrawDataPuller(QObject):
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--ip', type=str, default='0.0.0.0')
+    parser.add_argument('--fps', type=int, default=int)
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
+    ActorsDrawDataPuller.fps = args.fps
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
     engine.quit.connect(app.quit)
