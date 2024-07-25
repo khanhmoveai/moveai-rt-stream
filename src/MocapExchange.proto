@@ -113,7 +113,7 @@ message MocapStreamRequest {
 // `MocapStreamResponse` is used to communicate with Unreal Engine
 message MocapStreamResponse {
     repeated Pose poses = 1; // Poses captured in this frame.
-    float serverTime = 2; // Server time when this response was sent.
+    double serverTime = 2; // Server time when this response was sent.
     optional uint64 mocapServerTimestamp=3; // Exact timestamp of the mocap data.
 }
 
