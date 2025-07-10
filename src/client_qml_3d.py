@@ -87,26 +87,34 @@ class ActorsDrawDataPuller(QObject):
 
     def _receive(self):
         print(f'start receiving thread')
-        with grpc.insecure_channel(f'{args.ip}:54321') as channel:
-            print(f'Created data channel')
-            stub = MocapExchange_pb2_grpc.MocapServerStub(channel)
-            print("-------------- get_mocap_stream --------------")
-            request = MocapExchange_pb2.MocapStreamRequest(fps=60)
-            responses = stub.GetMocapStream(request)
-            frm_cnt = 0
-            self._actors_models = {}
-            for response in responses:
-                # print(f"Received frame {frm_cnt}. n_poses = {len(response.poses)}")
-                frm_cnt += 1
-                for pose in response.poses:
-                    subjectId = pose.subjectId
-                    if subjectId not in self._actors_models:
-                        model = self._get_structure(stub, subjectId)
-                        if model is not None:
-                            # print(f'Queried actor model: {model}')
-                            self._actors_models[subjectId] = model
-                            self.newActorCreated.emit(str(subjectId))
-                self._pose_queue.put(response)
+        while True:
+            try:
+                with grpc.insecure_channel(f'{args.ip}:54321') as channel:
+                    print(f'Created data channel')
+                    stub = MocapExchange_pb2_grpc.MocapServerStub(channel)
+                    print("-------------- get_mocap_stream --------------")
+                    request = MocapExchange_pb2.MocapStreamRequest(fps=60)
+                    responses = stub.GetMocapStream(request)
+                    frm_cnt = 0
+                    self._actors_models = {}
+                    for response in responses:
+                        # print(f"Received frame {frm_cnt}. n_poses = {len(response.poses)}")
+                        frm_cnt += 1
+                        for pose in response.poses:
+                            subjectId = pose.subjectId
+                            if subjectId not in self._actors_models:
+                                model = self._get_structure(stub, subjectId)
+                                if model is not None:
+                                    # print(f'Queried actor model: {model}')
+                                    self._actors_models[subjectId] = model
+                                    self.newActorCreated.emit(str(subjectId))
+                        self._pose_queue.put(response)
+            except grpc.FutureTimeoutError:
+                print('Failed to connect, retrying...')
+                time.sleep(2)
+            except Exception as e:
+                print(f'Error: {e}, retrying...')
+                time.sleep(2)
 
     def _get_structure(self, stub, actor_id):
         try:
