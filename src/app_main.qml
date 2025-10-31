@@ -88,7 +88,7 @@ Window {
 
     Timer{
         id: pullTimer
-        interval: 60;
+        interval: 10;
         repeat: true
         onTriggered: {
             const frm = puller.tryPull()

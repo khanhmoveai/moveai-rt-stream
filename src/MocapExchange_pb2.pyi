@@ -7,7 +7,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class StructureType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = []
+    __slots__ = ()
     HUMAN: _ClassVar[StructureType]
     BALL: _ClassVar[StructureType]
     BIKE: _ClassVar[StructureType]
@@ -16,7 +16,7 @@ BALL: StructureType
 BIKE: StructureType
 
 class Translation(_message.Message):
-    __slots__ = ["x", "y", "z"]
+    __slots__ = ("x", "y", "z")
     X_FIELD_NUMBER: _ClassVar[int]
     Y_FIELD_NUMBER: _ClassVar[int]
     Z_FIELD_NUMBER: _ClassVar[int]
@@ -26,9 +26,9 @@ class Translation(_message.Message):
     def __init__(self, x: _Optional[float] = ..., y: _Optional[float] = ..., z: _Optional[float] = ...) -> None: ...
 
 class Orientation(_message.Message):
-    __slots__ = ["rotationType", "rotationValues"]
+    __slots__ = ("rotationType", "rotationValues")
     class RotationType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = []
+        __slots__ = ()
         QUATERNION: _ClassVar[Orientation.RotationType]
         MATRIX: _ClassVar[Orientation.RotationType]
         EULER_XYZ: _ClassVar[Orientation.RotationType]
@@ -70,7 +70,7 @@ class Orientation(_message.Message):
     def __init__(self, rotationType: _Optional[_Union[Orientation.RotationType, str]] = ..., rotationValues: _Optional[_Iterable[float]] = ...) -> None: ...
 
 class Transform(_message.Message):
-    __slots__ = ["translation", "orientation"]
+    __slots__ = ("translation", "orientation")
     TRANSLATION_FIELD_NUMBER: _ClassVar[int]
     ORIENTATION_FIELD_NUMBER: _ClassVar[int]
     translation: Translation
@@ -78,7 +78,7 @@ class Transform(_message.Message):
     def __init__(self, translation: _Optional[_Union[Translation, _Mapping]] = ..., orientation: _Optional[_Union[Orientation, _Mapping]] = ...) -> None: ...
 
 class Link(_message.Message):
-    __slots__ = ["name", "linkId", "parentLinkId", "offset", "mass", "linkSize", "inertialMatrix"]
+    __slots__ = ("name", "linkId", "parentLinkId", "offset", "mass", "linkSize", "inertialMatrix")
     NAME_FIELD_NUMBER: _ClassVar[int]
     LINKID_FIELD_NUMBER: _ClassVar[int]
     PARENTLINKID_FIELD_NUMBER: _ClassVar[int]
@@ -96,7 +96,7 @@ class Link(_message.Message):
     def __init__(self, name: _Optional[str] = ..., linkId: _Optional[int] = ..., parentLinkId: _Optional[int] = ..., offset: _Optional[_Union[Transform, _Mapping]] = ..., mass: _Optional[float] = ..., linkSize: _Optional[_Iterable[float]] = ..., inertialMatrix: _Optional[_Iterable[float]] = ...) -> None: ...
 
 class JointMeta(_message.Message):
-    __slots__ = ["jointId", "linkId", "name"]
+    __slots__ = ("jointId", "linkId", "name")
     JOINTID_FIELD_NUMBER: _ClassVar[int]
     LINKID_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
@@ -106,7 +106,7 @@ class JointMeta(_message.Message):
     def __init__(self, jointId: _Optional[int] = ..., linkId: _Optional[int] = ..., name: _Optional[str] = ...) -> None: ...
 
 class Structure(_message.Message):
-    __slots__ = ["structureId", "structureType", "name", "links", "joints"]
+    __slots__ = ("structureId", "structureType", "name", "links", "joints")
     STRUCTUREID_FIELD_NUMBER: _ClassVar[int]
     STRUCTURETYPE_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
@@ -120,7 +120,7 @@ class Structure(_message.Message):
     def __init__(self, structureId: _Optional[int] = ..., structureType: _Optional[_Union[StructureType, str]] = ..., name: _Optional[str] = ..., links: _Optional[_Iterable[_Union[Link, _Mapping]]] = ..., joints: _Optional[_Iterable[_Union[JointMeta, _Mapping]]] = ...) -> None: ...
 
 class Joint(_message.Message):
-    __slots__ = ["jointId", "transform"]
+    __slots__ = ("jointId", "transform")
     JOINTID_FIELD_NUMBER: _ClassVar[int]
     TRANSFORM_FIELD_NUMBER: _ClassVar[int]
     jointId: int
@@ -128,7 +128,7 @@ class Joint(_message.Message):
     def __init__(self, jointId: _Optional[int] = ..., transform: _Optional[_Union[Transform, _Mapping]] = ...) -> None: ...
 
 class Pose(_message.Message):
-    __slots__ = ["subjectId", "timestamp", "joints", "globalJoints"]
+    __slots__ = ("subjectId", "timestamp", "joints", "globalJoints")
     SUBJECTID_FIELD_NUMBER: _ClassVar[int]
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     JOINTS_FIELD_NUMBER: _ClassVar[int]
@@ -140,13 +140,13 @@ class Pose(_message.Message):
     def __init__(self, subjectId: _Optional[int] = ..., timestamp: _Optional[int] = ..., joints: _Optional[_Iterable[_Union[Joint, _Mapping]]] = ..., globalJoints: _Optional[_Iterable[_Union[Joint, _Mapping]]] = ...) -> None: ...
 
 class MocapStreamRequest(_message.Message):
-    __slots__ = ["fps"]
+    __slots__ = ("fps",)
     FPS_FIELD_NUMBER: _ClassVar[int]
     fps: float
     def __init__(self, fps: _Optional[float] = ...) -> None: ...
 
 class MocapStreamResponse(_message.Message):
-    __slots__ = ["poses", "serverTime", "mocapServerTimestamp"]
+    __slots__ = ("poses", "serverTime", "mocapServerTimestamp")
     POSES_FIELD_NUMBER: _ClassVar[int]
     SERVERTIME_FIELD_NUMBER: _ClassVar[int]
     MOCAPSERVERTIMESTAMP_FIELD_NUMBER: _ClassVar[int]
@@ -156,25 +156,25 @@ class MocapStreamResponse(_message.Message):
     def __init__(self, poses: _Optional[_Iterable[_Union[Pose, _Mapping]]] = ..., serverTime: _Optional[float] = ..., mocapServerTimestamp: _Optional[int] = ...) -> None: ...
 
 class StructureRequest(_message.Message):
-    __slots__ = ["structureId"]
+    __slots__ = ("structureId",)
     STRUCTUREID_FIELD_NUMBER: _ClassVar[int]
     structureId: _containers.RepeatedScalarFieldContainer[int]
     def __init__(self, structureId: _Optional[_Iterable[int]] = ...) -> None: ...
 
 class StructureResponse(_message.Message):
-    __slots__ = ["structures"]
+    __slots__ = ("structures",)
     STRUCTURES_FIELD_NUMBER: _ClassVar[int]
     structures: _containers.RepeatedCompositeFieldContainer[Structure]
     def __init__(self, structures: _Optional[_Iterable[_Union[Structure, _Mapping]]] = ...) -> None: ...
 
 class ActorStateFrame(_message.Message):
-    __slots__ = ["pose"]
+    __slots__ = ("pose",)
     POSE_FIELD_NUMBER: _ClassVar[int]
     pose: Pose
     def __init__(self, pose: _Optional[_Union[Pose, _Mapping]] = ...) -> None: ...
 
 class ActorStateFramesRecord(_message.Message):
-    __slots__ = ["trackID", "actorModel", "frames"]
+    __slots__ = ("trackID", "actorModel", "frames")
     TRACKID_FIELD_NUMBER: _ClassVar[int]
     ACTORMODEL_FIELD_NUMBER: _ClassVar[int]
     FRAMES_FIELD_NUMBER: _ClassVar[int]

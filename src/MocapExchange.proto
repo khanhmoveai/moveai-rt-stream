@@ -114,7 +114,7 @@ message MocapStreamRequest {
 message MocapStreamResponse {
     repeated Pose poses = 1; // Poses captured in this frame.
     double serverTime = 2; // Server time when this response was sent.
-    optional uint64 mocapServerTimestamp=3; // Exact timestamp of the mocap data.
+    uint64 mocapServerTimestamp=3; // Exact timestamp of the mocap data.
 }
 
 // Request for specific structure data based on their IDs.

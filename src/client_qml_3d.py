@@ -60,7 +60,6 @@ class ActorsDrawDataPuller(QObject):
             if response_poses is not None:
                 ts_ms = time.clock_gettime_ns(time.CLOCK_REALTIME) / 1000000
                 dt = ts_ms - response_poses.mocapServerTimestamp
-                print(f'stream latency: {response_poses.mocapServerTimestamp}, {ts_ms}, {dt}')
             data = {}
             for p in response_poses.poses:
                 trans = []
@@ -74,7 +73,9 @@ class ActorsDrawDataPuller(QObject):
                     r = [0, 0, 0, 1] if len(r) == 0 else r
                     assert len(r) == 4, f"invalid rotation values len. len = {len(r)}"
                     trans.append(QVector3D(t_1[0], t_1[1], t_1[2]))
-                    rots.append(QQuaternion(r[3], r[0], r[1], r[2]))
+                    q = QQuaternion(r[3], r[0], r[1], r[2])
+                    q.normalize()
+                    rots.append(q)
                 data[s_id] = {}
                 data[s_id]["joints_translations"] = trans
                 data[s_id]["joints_rotations"] = rots
