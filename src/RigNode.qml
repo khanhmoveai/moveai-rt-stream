@@ -8,7 +8,7 @@ Node{
     property real scaleFactor
 
     scale: Qt.vector3d(50, 50, 50)
-    // RigMoveAIUrdf {
+// RigMoveAIUrdf {
     //     id: rignode
     // }
 
@@ -34,14 +34,119 @@ Node{
         ]
     }
 
+    // ------------------------------
+    // Quaternion helpers
+    // ------------------------------
+    function qmul(a, b) {                // Hamilton product: a * b
+        const w = a.scalar*b.scalar - a.x*b.x - a.y*b.y - a.z*b.z
+        const x = a.scalar*b.x + a.x*b.scalar + a.y*b.z - a.z*b.y
+        const y = a.scalar*b.y - a.x*b.z + a.y*b.scalar + a.z*b.x
+        const z = a.scalar*b.z + a.x*b.y - a.y*b.x + a.z*b.scalar
+        return Qt.quaternion(w, x, y, z)
+    }
+    function qnorm(q) {
+        const len = Math.sqrt(q.scalar*q.scalar + q.x*q.x + q.y*q.y + q.z*q.z) || 1
+        return Qt.quaternion(q.scalar/len, q.x/len, q.y/len, q.z/len)
+    }
+    // Deep-copy pack/unpack so we never hold live references
+    function qpack(q) { return [q.scalar, q.x, q.y, q.z] }
+    function qunpack(a) { return Qt.quaternion(a[0], a[1], a[2], a[3]) }
+
+    // Compose with cached bind * delta. Flip order if your source is pre-multiplied.
+    function compose(aliasName, deltaQ) {
+        const basePacked = cache.rot[aliasName]
+        const base = qunpack(basePacked)
+        return qnorm(qmul(base, deltaQ))
+    }
+
+    // ------------------------------
+    // Cache bind/original rotations once
+    // ------------------------------
+    function cacheBindRotations() {
+        // Body
+        cache.rot.jRoot              = qpack(rignode.jRoot.rotation)
+        cache.rot.jLHip              = qpack(rignode.jLHip.rotation)
+        cache.rot.jLKnee             = qpack(rignode.jLKnee.rotation)
+        cache.rot.jLAnkle            = qpack(rignode.jLAnkle.rotation)
+        cache.rot.jLToe              = qpack(rignode.jLToe.rotation)
+        cache.rot.jRHip              = qpack(rignode.jRHip.rotation)
+        cache.rot.jRKnee             = qpack(rignode.jRKnee.rotation)
+        cache.rot.jRAnkle            = qpack(rignode.jRAnkle.rotation)
+        cache.rot.jRToe              = qpack(rignode.jRToe.rotation)
+        cache.rot.jSpine0            = qpack(rignode.jSpine0.rotation)
+        cache.rot.jSpine1            = qpack(rignode.jSpine1.rotation)
+        cache.rot.jLShoulderClavicle = qpack(rignode.jLShoulderClavicle.rotation)
+        cache.rot.jLShoulder         = qpack(rignode.jLShoulder.rotation)
+        cache.rot.jLElbow            = qpack(rignode.jLElbow.rotation)
+        cache.rot.jLWrist            = qpack(rignode.jLWrist.rotation)
+        cache.rot.jNeck              = qpack(rignode.jNeck.rotation)
+        cache.rot.jRShoulderClavicle = qpack(rignode.jRShoulderClavicle.rotation)
+        cache.rot.jRShoulder         = qpack(rignode.jRShoulder.rotation)
+        cache.rot.jRElbow            = qpack(rignode.jRElbow.rotation)
+        cache.rot.jRWrist            = qpack(rignode.jRWrist.rotation)
+
+        // Left hand
+        cache.rot.jLHandBase   = qpack(rignode.jLHandBase.rotation)
+        cache.rot.jLHandThumb1 = qpack(rignode.jLHandThumb1.rotation)
+        cache.rot.jLHandThumb2 = qpack(rignode.jLHandThumb2.rotation)
+        cache.rot.jLHandThumb3 = qpack(rignode.jLHandThumb3.rotation)
+        cache.rot.jLHandIndex1 = qpack(rignode.jLHandIndex1.rotation)
+        cache.rot.jLHandIndex2 = qpack(rignode.jLHandIndex2.rotation)
+        cache.rot.jLHandIndex3 = qpack(rignode.jLHandIndex3.rotation)
+        cache.rot.jLHandMiddle1= qpack(rignode.jLHandMiddle1.rotation)
+        cache.rot.jLHandMiddle2= qpack(rignode.jLHandMiddle2.rotation)
+        cache.rot.jLHandMiddle3= qpack(rignode.jLHandMiddle3.rotation)
+        cache.rot.jLHandRing1  = qpack(rignode.jLHandRing1.rotation)
+        cache.rot.jLHandRing2  = qpack(rignode.jLHandRing2.rotation)
+        cache.rot.jLHandRing3  = qpack(rignode.jLHandRing3.rotation)
+        cache.rot.jLHandPinky1 = qpack(rignode.jLHandPinky1.rotation)
+        cache.rot.jLHandPinky2 = qpack(rignode.jLHandPinky2.rotation)
+        cache.rot.jLHandPinky3 = qpack(rignode.jLHandPinky3.rotation)
+
+        // Right hand
+        cache.rot.jRHandBase   = qpack(rignode.jRHandBase.rotation)
+        cache.rot.jRHandThumb1 = qpack(rignode.jRHandThumb1.rotation)
+        cache.rot.jRHandThumb2 = qpack(rignode.jRHandThumb2.rotation)
+        cache.rot.jRHandThumb3 = qpack(rignode.jRHandThumb3.rotation)
+        cache.rot.jRHandIndex1 = qpack(rignode.jRHandIndex1.rotation)
+        cache.rot.jRHandIndex2 = qpack(rignode.jRHandIndex2.rotation)
+        cache.rot.jRHandIndex3 = qpack(rignode.jRHandIndex3.rotation)
+        cache.rot.jRHandMiddle1= qpack(rignode.jRHandMiddle1.rotation)
+        cache.rot.jRHandMiddle2= qpack(rignode.jRHandMiddle2.rotation)
+        cache.rot.jRHandMiddle3= qpack(rignode.jRHandMiddle3.rotation)
+        cache.rot.jRHandRing1  = qpack(rignode.jRHandRing1.rotation)
+        cache.rot.jRHandRing2  = qpack(rignode.jRHandRing2.rotation)
+        cache.rot.jRHandRing3  = qpack(rignode.jRHandRing3.rotation)
+        cache.rot.jRHandPinky1 = qpack(rignode.jRHandPinky1.rotation)
+        cache.rot.jRHandPinky2 = qpack(rignode.jRHandPinky2.rotation)
+        cache.rot.jRHandPinky3 = qpack(rignode.jRHandPinky3.rotation)
+
+        // lock it down to avoid accidental writes
+        Object.freeze(cache.rot)
+        _bindCached = true
+    }
+
     function initialize(jointsIndices){
         initBodyJointMapping(jointsIndices)
         initLeftHandJointMapping(jointsIndices)
         initRightHandJointMapping(jointsIndices)
-        console.log("RigNode ", actorModelID, " initialized: ", mapping)
+        cacheBindRotations()
+        console.log("RigNode ", actorModelID, " initialized (bind rotations cached)")
     }
 
-    function initBodyJointMapping(jointsIndices){
+    // ------------------------------
+    // Per-frame update helpers
+    // ------------------------------
+    function setIfValid(idx, alias, nodeRef, jointRots){
+        if (!_bindCached) return
+        if (typeof idx === "number" && idx >= 0) {
+            const delta = jointRots[idx]
+            nodeRef.rotation = compose(alias, delta)   // final = bind * delta
+        }
+    }
+
+
+        function initBodyJointMapping(jointsIndices){
         mapping.rootIdx = jointsIndices["R"]
         mapping.lHipIdx = jointsIndices["L_Hip"]
         mapping.lKneeIdx = jointsIndices["L_Knee"]
@@ -104,222 +209,93 @@ Node{
         mapping.rHandPinky3Idx = jointsIndices["R_Hand_Pinky3"] || -1
     }
 
+    QtObject { id: cache; property var rot: ({}) }
+    property bool _bindCached: false
 
-    function updateLeftHandJoints(jointTrans, jointRots){
-        // Early exit if left hand joints are not available
-        if(mapping.lHandThumb1Idx < 0){
-            return;
-        }
+        function updateLeftHandJoints(jointTrans, jointRots){
+        if(mapping.lHandThumb1Idx < 0) return;
 
-        // if(mapping.lHandBaseIdx >= 0){
-        //    let r = jointRots[mapping.lHandBaseIdx]
-        //    rignode.jLWrist.rotation = r
-        // }
+        setIfValid(mapping.lHandBaseIdx,   "jLHandBase",   rignode.jLHandBase,   jointRots)
+        setIfValid(mapping.lHandThumb1Idx, "jLHandThumb1", rignode.jLHandThumb1, jointRots)
+        setIfValid(mapping.lHandThumb2Idx, "jLHandThumb2", rignode.jLHandThumb2, jointRots)
+        setIfValid(mapping.lHandThumb3Idx, "jLHandThumb3", rignode.jLHandThumb3, jointRots)
 
-        //Left hand - only update if indices are valid
-        if(mapping.lHandThumb1Idx >= 0){
-            let r = jointRots[mapping.lHandThumb1Idx]
-            rignode.jLHandThumb1.rotation = r
-            console.log("l thumnb ", r)
-        }
+        setIfValid(mapping.lHandIndex1Idx, "jLHandIndex1", rignode.jLHandIndex1, jointRots)
+        setIfValid(mapping.lHandIndex2Idx, "jLHandIndex2", rignode.jLHandIndex2, jointRots)
+        setIfValid(mapping.lHandIndex3Idx, "jLHandIndex3", rignode.jLHandIndex3, jointRots)
 
-        if(mapping.lHandThumb2Idx >= 0){
-            let r = jointRots[mapping.lHandThumb2Idx]
-            rignode.jLHandThumb2.rotation = r
-        }
-        if(mapping.lHandThumb3Idx >= 0){
-            let r = jointRots[mapping.lHandThumb3Idx]
-            rignode.jLHandThumb3.rotation = r
-        }
+        setIfValid(mapping.lHandMiddle1Idx,"jLHandMiddle1",rignode.jLHandMiddle1,jointRots)
+        setIfValid(mapping.lHandMiddle2Idx,"jLHandMiddle2",rignode.jLHandMiddle2,jointRots)
+        setIfValid(mapping.lHandMiddle3Idx,"jLHandMiddle3",rignode.jLHandMiddle3,jointRots)
 
-        if(mapping.lHandIndex1Idx >= 0){
-            let r = jointRots[mapping.lHandIndex1Idx]
-            rignode.jLHandIndex1.rotation = r
-        }
-        if(mapping.lHandIndex2Idx >= 0){
-            let r = jointRots[mapping.lHandIndex2Idx]
-            rignode.jLHandIndex2.rotation = r
-        }
-        if(mapping.lHandIndex3Idx >= 0){
-            let r = jointRots[mapping.lHandIndex3Idx]
-            rignode.jLHandIndex3.rotation = r
-        }
-        if(mapping.lHandMiddle1Idx >= 0){
-            let r = jointRots[mapping.lHandMiddle1Idx]
-            rignode.jLHandMiddle1.rotation = r
-        }
-        if(mapping.lHandMiddle2Idx >= 0){
-            let r = jointRots[mapping.lHandMiddle2Idx]
-            rignode.jLHandMiddle2.rotation = r
-        }
-        if(mapping.lHandMiddle3Idx >= 0){
-            let r = jointRots[mapping.lHandMiddle3Idx]
-            rignode.jLHandMiddle3.rotation = r
-        }
-        if(mapping.lHandRing1Idx >= 0){
-            let r = jointRots[mapping.lHandRing1Idx]
-            rignode.jLHandRing1.rotation = r
-        }
-        if(mapping.lHandRing2Idx >= 0){
-            let r = jointRots[mapping.lHandRing2Idx]
-            rignode.jLHandRing2.rotation = r
-        }
-        if(mapping.lHandRing3Idx >= 0){
-            let r = jointRots[mapping.lHandRing3Idx]
-            rignode.jLHandRing3.rotation = r
-        }
-        if(mapping.lHandPinky1Idx >= 0){
-            let r = jointRots[mapping.lHandPinky1Idx]
-            rignode.jLHandPinky1.rotation = r
-        }
-        if(mapping.lHandPinky2Idx >= 0){
-            let r = jointRots[mapping.lHandPinky2Idx]
-            rignode.jLHandPinky2.rotation = r
-        }
-        if(mapping.lHandPinky3Idx >= 0){
-            let r = jointRots[mapping.lHandPinky3Idx]
-            rignode.jLHandPinky3.rotation = r
-        }
+        setIfValid(mapping.lHandRing1Idx,  "jLHandRing1",  rignode.jLHandRing1,  jointRots)
+        setIfValid(mapping.lHandRing2Idx,  "jLHandRing2",  rignode.jLHandRing2,  jointRots)
+        setIfValid(mapping.lHandRing3Idx,  "jLHandRing3",  rignode.jLHandRing3,  jointRots)
+
+        setIfValid(mapping.lHandPinky1Idx, "jLHandPinky1", rignode.jLHandPinky1, jointRots)
+        setIfValid(mapping.lHandPinky2Idx, "jLHandPinky2", rignode.jLHandPinky2, jointRots)
+        setIfValid(mapping.lHandPinky3Idx, "jLHandPinky3", rignode.jLHandPinky3, jointRots)
     }
 
     function updateRightHandJoints(jointTrans, jointRots){
-        // Early exit if right hand joints are not available
-        if(mapping.rHandThumb1Idx < 0){
-            return;
-        }
+        if(mapping.rHandThumb1Idx < 0) return;
 
-        //if(mapping.rHandBaseIdx >= 0){
-        //    let r = jointRots[mapping.rHandBaseIdx]
-        //    rignode.jRWrist.rotation = r
-        //}
+        setIfValid(mapping.rHandBaseIdx,   "jRHandBase",   rignode.jRHandBase,   jointRots)
+        setIfValid(mapping.rHandThumb1Idx, "jRHandThumb1", rignode.jRHandThumb1, jointRots)
+        setIfValid(mapping.rHandThumb2Idx, "jRHandThumb2", rignode.jRHandThumb2, jointRots)
+        setIfValid(mapping.rHandThumb3Idx, "jRHandThumb3", rignode.jRHandThumb3, jointRots)
 
-        // Right hand - only update if indices are valid
-        if(mapping.rHandThumb1Idx >= 0){
-            let r = jointRots[mapping.rHandThumb1Idx]
-            rignode.jRHandThumb1.rotation = r
-        }
-        if(mapping.rHandThumb2Idx >= 0){
-            let r = jointRots[mapping.rHandThumb2Idx]
-            rignode.jRHandThumb2.rotation = r
-        }
-        if(mapping.rHandThumb3Idx >= 0){
-            let r = jointRots[mapping.rHandThumb3Idx]
-            rignode.jRHandThumb3.rotation = r
-        }
-        // if(mapping.rHandIndex1Idx >= 0){
-        //     let r = jointRots[mapping.rHandIndex1Idx]
-        //     rignode.jRHandIndex1.rotation = r
-        //
-        // }
-        // if(mapping.rHandIndex2Idx >= 0){
-        //     let r = jointRots[mapping.rHandIndex2Idx]
-        //     rignode.jRHandIndex2.rotation = r
-        // }
-        // if(mapping.rHandIndex3Idx >= 0){
-        //     let r = jointRots[mapping.rHandIndex3Idx]
-        //     rignode.jRHandIndex3.rotation = r
-        // }
-        // if(mapping.rHandMiddle1Idx >= 0){
-        //     let r = jointRots[mapping.rHandMiddle1Idx]
-        //     rignode.jRHandMiddle1.rotation = r
-        // }
-        // if(mapping.rHandMiddle2Idx >= 0){
-        //     let r = jointRots[mapping.rHandMiddle2Idx]
-        //     rignode.jRHandMiddle2.rotation = r
-        // }
-        // if(mapping.rHandMiddle3Idx >= 0){
-        //     let r = jointRots[mapping.rHandMiddle3Idx]
-        //     rignode.jRHandMiddle3.rotation = r
-        // }
-        // if(mapping.rHandRing1Idx >= 0){
-        //     let r = jointRots[mapping.rHandRing1Idx]
-        //     rignode.jRHandRing1.rotation = r
-        // }
-        // if(mapping.rHandRing2Idx >= 0){
-        //     let r = jointRots[mapping.rHandRing2Idx]
-        //     rignode.jRHandRing2.rotation = r
-        // }
-        // if(mapping.rHandRing3Idx >= 0){
-        //     let r = jointRots[mapping.rHandRing3Idx]
-        //     rignode.jRHandRing3.rotation = r
-        // }
-        // if(mapping.rHandPinky1Idx >= 0){
-        //     let r = jointRots[mapping.rHandPinky1Idx]
-        //     rignode.jRHandPinky1.rotation = r
-        // }
-        // if(mapping.rHandPinky2Idx >= 0){
-        //     let r = jointRots[mapping.rHandPinky2Idx]
-        //     rignode.jRHandPinky2.rotation = r
-        // }
-        // if(mapping.rHandPinky3Idx >= 0){
-        //     let r = jointRots[mapping.rHandPinky3Idx]
-        //     rignode.jRHandPinky3.rotation = r
-        // }
+        setIfValid(mapping.rHandIndex1Idx, "jRHandIndex1", rignode.jRHandIndex1, jointRots)
+        setIfValid(mapping.rHandIndex2Idx, "jRHandIndex2", rignode.jRHandIndex2, jointRots)
+        setIfValid(mapping.rHandIndex3Idx, "jRHandIndex3", rignode.jRHandIndex3, jointRots)
 
-        console.log("rignode.jRHandIndex1.rotation: ", rignode.jRHandIndex1.rotation, rignode.jRHandIndex1.rotation.toEulerAngles())
+        setIfValid(mapping.rHandMiddle1Idx,"jRHandMiddle1",rignode.jRHandMiddle1,jointRots)
+        setIfValid(mapping.rHandMiddle2Idx,"jRHandMiddle2",rignode.jRHandMiddle2,jointRots)
+        setIfValid(mapping.rHandMiddle3Idx,"jRHandMiddle3",rignode.jRHandMiddle3,jointRots)
 
+        setIfValid(mapping.rHandRing1Idx,  "jRHandRing1",  rignode.jRHandRing1,  jointRots)
+        setIfValid(mapping.rHandRing2Idx,  "jRHandRing2",  rignode.jRHandRing2,  jointRots)
+        setIfValid(mapping.rHandRing3Idx,  "jRHandRing3",  rignode.jRHandRing3,  jointRots)
+
+        setIfValid(mapping.rHandPinky1Idx, "jRHandPinky1", rignode.jRHandPinky1, jointRots)
+        setIfValid(mapping.rHandPinky2Idx, "jRHandPinky2", rignode.jRHandPinky2, jointRots)
+        setIfValid(mapping.rHandPinky3Idx, "jRHandPinky3", rignode.jRHandPinky3, jointRots)
+
+        // debug example:
+        // console.log("R index1 euler: ", rignode.jRHandIndex1.rotation.toEulerAngles())
     }
 
     function updateBodyJoints(jointTrans, jointRots){
-        // Root (hips)
+        // Root position stays absolute as before:
         let p = jointTrans[mapping.rootIdx]
-        // Swizzle translation: (x, y, z) -> (x, z, -y)
         rignode.jRoot.position = Qt.vector3d(p.x, p.y, p.z)
-        let r = jointRots[mapping.rootIdx]
-        rignode.jRoot.rotation = r
 
-        // Left leg
-        r = jointRots[mapping.lHipIdx]
-        rignode.jLHip.rotation = r
-        r = jointRots[mapping.lKneeIdx]
-        rignode.jLKnee.rotation = r
-        r = jointRots[mapping.lAnkleIdx]
-        rignode.jLAnkle.rotation = r
-        // No jLToe alias in RigMoveMoIdentity
+        setIfValid(mapping.rootIdx,               "jRoot",              rignode.jRoot,              jointRots)
 
-        // Right leg
-        r = jointRots[mapping.rHipIdx]
-        rignode.jRHip.rotation = r
-        r = jointRots[mapping.rKneeIdx]
-        rignode.jRKnee.rotation = r
-        r = jointRots[mapping.rAnkleIdx]
-        rignode.jRAnkle.rotation = r
-        // No jRToe alias in RigMoveMoIdentity
+        setIfValid(mapping.lHipIdx,               "jLHip",              rignode.jLHip,              jointRots)
+        setIfValid(mapping.lKneeIdx,              "jLKnee",             rignode.jLKnee,             jointRots)
+        setIfValid(mapping.lAnkleIdx,             "jLAnkle",            rignode.jLAnkle,            jointRots)
+        setIfValid(mapping.lToeIdx,               "jLToe",              rignode.jLToe,              jointRots)
 
-        // Spine
-        // No jSpine1 alias, only jSpine0 and jSpine1
-        r = jointRots[mapping.spine1Idx]
-        rignode.jSpine0.rotation = r
-        r = jointRots[mapping.spine2Idx]
-        rignode.jSpine1.rotation = r
+        setIfValid(mapping.rHipIdx,               "jRHip",              rignode.jRHip,              jointRots)
+        setIfValid(mapping.rKneeIdx,              "jRKnee",             rignode.jRKnee,             jointRots)
+        setIfValid(mapping.rAnkleIdx,             "jRAnkle",            rignode.jRAnkle,            jointRots)
+        setIfValid(mapping.rToeIdx,               "jRToe",              rignode.jRToe,              jointRots)
 
-        // Left arm
-        // No jLClavicle alias in RigMoveMoIdentity
-        r =  jointRots[mapping.lShoulderClavicleIdx]
-        rignode.jLShoulderClavicle.rotation = r
+        setIfValid(mapping.spine1Idx,             "jSpine0",            rignode.jSpine0,            jointRots)
+        setIfValid(mapping.spine2Idx,             "jSpine1",            rignode.jSpine1,            jointRots)
 
-        r = jointRots[mapping.lShoulderIdx]
-        rignode.jLShoulder.rotation = r
+        setIfValid(mapping.lShoulderClavicleIdx,  "jLShoulderClavicle", rignode.jLShoulderClavicle, jointRots)
+        setIfValid(mapping.lShoulderIdx,          "jLShoulder",         rignode.jLShoulder,         jointRots)
+        setIfValid(mapping.lElbowIdx,             "jLElbow",            rignode.jLElbow,            jointRots)
+        setIfValid(mapping.lWristIdx,             "jLWrist",            rignode.jLWrist,            jointRots)
 
-        r = jointRots[mapping.lElbowIdx]
-        rignode.jLElbow.rotation = r
-        r = jointRots[mapping.lWristIdx]
-        rignode.jLWrist.rotation = r
+        setIfValid(mapping.neckIdx,               "jNeck",              rignode.jNeck,              jointRots)
 
-        // No jNeck alias in RigMoveMoIdentity
-
-        // Right arm
-        // No jRClavicle alias in RigMoveMoIdentity
-        r =  jointRots[mapping.rShoulderClavicleIdx]
-        rignode.jRShoulderClavicle.rotation = r
-
-        r = jointRots[mapping.rShoulderIdx]
-        rignode.jRShoulder.rotation = r
-
-        r = jointRots[mapping.rElbowIdx]
-        rignode.jRElbow.rotation = r
-        r = jointRots[mapping.rWristIdx]
-        rignode.jRWrist.rotation = r
+        setIfValid(mapping.rShoulderClavicleIdx,  "jRShoulderClavicle", rignode.jRShoulderClavicle, jointRots)
+        setIfValid(mapping.rShoulderIdx,          "jRShoulder",         rignode.jRShoulder,         jointRots)
+        setIfValid(mapping.rElbowIdx,             "jRElbow",            rignode.jRElbow,            jointRots)
+        setIfValid(mapping.rWristIdx,             "jRWrist",            rignode.jRWrist,            jointRots)
     }
 
     function update(jointTrans, jointRots, puller){
@@ -368,7 +344,7 @@ Node{
         property int lHandPinky1Idx: -1
         property int lHandPinky2Idx: -1
         property int lHandPinky3Idx: -1
-        
+
         // Right hand joints
         property int rHandBaseIdx: -1
         property int rHandThumb1Idx: -1

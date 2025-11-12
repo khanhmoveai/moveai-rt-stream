@@ -10,6 +10,8 @@ Node {
     property alias jRKnee: rightLeg
     property alias jLAnkle: leftFoot
     property alias jRAnkle: rightFoot
+    property alias jLToe: leftToeBase
+    property alias jRToe: rightToeBase
     property alias jSpine0: spine
     property alias jSpine1: spine1
 
@@ -64,7 +66,8 @@ Node {
     // Resources
     PrincipledMaterial {
         id: material_002_material
-        baseColor: "#ff6e6e6e"
+        objectName: "Material.002"
+        baseColor: "#ffafafaf"
         metalness: 0.609929084777832
         roughness: 0.5
         cullMode: PrincipledMaterial.NoCulling
@@ -231,9 +234,11 @@ Node {
     // Nodes:
     Node {
         id: moveai_male
+        objectName: "moveai_male"
         position: Qt.vector3d(0, 0, 0.03163)
         Model {
             id: m_ca01
+            objectName: "m_ca01"
             source: "meshes/mblab_human_male_001_mesh.mesh"
             skin: skin
             materials: [
@@ -242,35 +247,44 @@ Node {
         }
         Node {
             id: root
+            objectName: "root"
             position: Qt.vector3d(-7.93851e-09, 0.0544005, -0.119029)
             rotation: Qt.quaternion(0.707107, -0.707107, 0, 0)
             scale: Qt.vector3d(1, 1, 1)
             Node {
                 id: hips
+                objectName: "Hips"
                 position: Qt.vector3d(7.93855e-09, -0.0873992, 0.90509)
                 Node {
                     id: rightUpLeg
+                    objectName: "RightUpLeg"
                     position: Qt.vector3d(-0.112593, 1.49012e-08, -2.38419e-07)
                     Node {
                         id: rightLeg
+                        objectName: "RightLeg"
                         position: Qt.vector3d(-2.01166e-07, -7.7486e-07, -0.445229)
                         Node {
                             id: calf_twist_R
+                            objectName: "calf_twist_R"
                             position: Qt.vector3d(-7.45058e-09, -2.98023e-08, 5.96046e-08)
                         }
                         Node {
                             id: rightFoot
+                            objectName: "RightFoot"
                             position: Qt.vector3d(2.98023e-08, -2.98023e-08, -0.434249)
                             Node {
                                 id: rightFoot_scale_horizontal
+                                objectName: "RightFoot_scale_horizontal"
                                 position: Qt.vector3d(0, 0.000901207, -0.0799937)
                                 scale: Qt.vector3d(1, 1, 1)
                                 Node {
                                     id: rightFoot_scale_horizontal_dummy
+                                    objectName: "RightFoot_scale_horizontal_dummy"
                                     position: Qt.vector3d(0, -4.46453e-08, 2.53058e-08)
                                 }
                                 Node {
                                     id: rightToeBase
+                                    objectName: "RightToeBase"
                                     position: Qt.vector3d(4.47035e-08, -0.122922, -0.00138504)
                                 }
                             }
@@ -278,32 +292,40 @@ Node {
                     }
                     Node {
                         id: thigh_twist_R
+                        objectName: "thigh_twist_R"
                         position: Qt.vector3d(-1.93715e-07, -7.15256e-07, 5.96046e-08)
                     }
                 }
                 Node {
                     id: leftUpLeg
+                    objectName: "LeftUpLeg"
                     position: Qt.vector3d(0.112593, 1.49012e-08, -2.38419e-07)
                     Node {
                         id: leftLeg
+                        objectName: "LeftLeg"
                         position: Qt.vector3d(2.01166e-07, -7.7486e-07, -0.445229)
                         Node {
                             id: calf_twist_L
+                            objectName: "calf_twist_L"
                             position: Qt.vector3d(7.45058e-09, -2.98023e-08, 5.96046e-08)
                         }
                         Node {
                             id: leftFoot
+                            objectName: "LeftFoot"
                             position: Qt.vector3d(-2.98023e-08, -2.98023e-08, -0.434249)
                             Node {
                                 id: leftFoot_scale_horizontal
+                                objectName: "LeftFoot_scale_horizontal"
                                 position: Qt.vector3d(0, 0.000901207, -0.0799937)
                                 scale: Qt.vector3d(1, 1, 1)
                                 Node {
                                     id: leftToeBase
+                                    objectName: "LeftToeBase"
                                     position: Qt.vector3d(-4.47035e-08, -0.122922, -0.00138504)
                                 }
                                 Node {
                                     id: leftFoot_scale_horizontal_dummy
+                                    objectName: "LeftFoot_scale_horizontal_dummy"
                                     position: Qt.vector3d(0, -4.46453e-08, 2.53058e-08)
                                 }
                             }
@@ -311,38 +333,48 @@ Node {
                     }
                     Node {
                         id: thigh_twist_L
+                        objectName: "thigh_twist_L"
                         position: Qt.vector3d(1.93715e-07, -7.15256e-07, 5.96046e-08)
                     }
                 }
                 Node {
                     id: spine
+                    objectName: "Spine"
                     position: Qt.vector3d(-4.7521e-09, 0, 0.206802)
                     Node {
                         id: spine1
+                        objectName: "Spine1"
                         position: Qt.vector3d(4.80938e-09, -2.98023e-08, 0.138699)
                         Node {
                             id: leftShoulder
+                            objectName: "LeftShoulder"
                             position: Qt.vector3d(3.15014e-09, -2.23517e-08, 0.138698)
                             Node {
                                 id: leftArm
+                                objectName: "LeftArm"
                                 position: Qt.vector3d(0.178899, -6.16014e-05, -0.000299692)
                                 Node {
                                     id: leftForeArm
+                                    objectName: "LeftForeArm"
                                     position: Qt.vector3d(0.255372, -5.96046e-08, 0)
                                     Node {
                                         id: leftHand
+                                        objectName: "LeftHand"
                                         position: Qt.vector3d(0.269843, 0, 2.38419e-06)
                                         Node {
                                             id: leftHandThumb1
+                                            objectName: "LeftHandThumb1"
                                             position: Qt.vector3d(0.0240954, -0.0258118, -0.0155212)
                                             rotation: Qt.quaternion(0.737614, 0.501698, 1.01009e-08, -0.451913)
                                             Node {
                                                 id: leftHandThumb2
+                                                objectName: "LeftHandThumb2"
                                                 position: Qt.vector3d(0.030393, 1.41468e-06, -2.53469e-05)
                                                 rotation: Qt.quaternion(1, 3.06591e-06, -4.71622e-06, -9.60846e-06)
                                                 scale: Qt.vector3d(1, 1, 1)
                                                 Node {
                                                     id: leftHandThumb3
+                                                    objectName: "LeftHandThumb3"
                                                     position: Qt.vector3d(0.0278056, 1.40537e-06, -2.34433e-05)
                                                     rotation: Qt.quaternion(1, -6.97188e-06, -1.05239e-05, -9.24058e-06)
                                                     scale: Qt.vector3d(1, 1, 1)
@@ -351,15 +383,19 @@ Node {
                                         }
                                         Node {
                                             id: leftHandIndex
+                                            objectName: "LeftHandIndex"
                                             position: Qt.vector3d(0.0283569, -0.0121126, -0.0111477)
                                             Node {
                                                 id: leftHandIndex1
+                                                objectName: "LeftHandIndex1"
                                                 position: Qt.vector3d(0.0597462, -0.00857229, 0.00594926)
                                                 Node {
                                                     id: leftHandIndex2
+                                                    objectName: "LeftHandIndex2"
                                                     position: Qt.vector3d(0.0329947, -1.49012e-08, -1.19209e-07)
                                                     Node {
                                                         id: leftHandIndex3
+                                                        objectName: "LeftHandIndex3"
                                                         position: Qt.vector3d(0.0221887, -3.72529e-09, 1.19209e-07)
                                                     }
                                                 }
@@ -367,15 +403,19 @@ Node {
                                         }
                                         Node {
                                             id: leftHandMiddle
+                                            objectName: "LeftHandMiddle"
                                             position: Qt.vector3d(0.0299744, 0.00496714, -0.00621736)
                                             Node {
                                                 id: leftHandMiddle1
+                                                objectName: "LeftHandMiddle1"
                                                 position: Qt.vector3d(0.0646919, -0.00160855, 0.00473952)
                                                 Node {
                                                     id: leftHandMiddle2
+                                                    objectName: "LeftHandMiddle2"
                                                     position: Qt.vector3d(0.0317359, 0, 2.38419e-07)
                                                     Node {
                                                         id: leftHandMiddle3
+                                                        objectName: "LeftHandMiddle3"
                                                         position: Qt.vector3d(0.0232731, 0, 0)
                                                     }
                                                 }
@@ -383,16 +423,20 @@ Node {
                                         }
                                         Node {
                                             id: leftHandRing
+                                            objectName: "LeftHandRing"
                                             position: Qt.vector3d(0.0325339, 0.0261922, -0.00411105)
                                             Node {
                                                 id: leftHandRing1
+                                                objectName: "LeftHandRing1"
                                                 position: Qt.vector3d(0.0492074, 0.000482008, 0.000155091)
                                                 scale: Qt.vector3d(1, 1, 1)
                                                 Node {
                                                     id: leftHandRing2
+                                                    objectName: "LeftHandRing2"
                                                     position: Qt.vector3d(0.0288431, 5.58794e-09, 0)
                                                     Node {
                                                         id: leftHandRing3
+                                                        objectName: "LeftHandRing3"
                                                         position: Qt.vector3d(0.0247866, 1.86265e-09, 0)
                                                     }
                                                 }
@@ -400,16 +444,20 @@ Node {
                                         }
                                         Node {
                                             id: leftHandPinky
+                                            objectName: "LeftHandPinky"
                                             position: Qt.vector3d(0.0328075, 0.0428612, -0.00580001)
                                             Node {
                                                 id: leftHandPinky1
+                                                objectName: "LeftHandPinky1"
                                                 position: Qt.vector3d(0.0359852, 0.000349201, -0.00413883)
                                                 scale: Qt.vector3d(1, 1, 1)
                                                 Node {
                                                     id: leftHandPinky2
+                                                    objectName: "LeftHandPinky2"
                                                     position: Qt.vector3d(0.0211114, 0, -2.38419e-07)
                                                     Node {
                                                         id: leftHandPinky3
+                                                        objectName: "LeftHandPinky3"
                                                         position: Qt.vector3d(0.0189454, 0, 1.19209e-07)
                                                     }
                                                 }
@@ -418,39 +466,48 @@ Node {
                                     }
                                     Node {
                                         id: lowerarm_twist_L
+                                        objectName: "lowerarm_twist_L"
                                         position: Qt.vector3d(-2.08616e-07, 2.98023e-08, -0.000300527)
                                     }
                                 }
                                 Node {
                                     id: upperarm_twist_L
+                                    objectName: "upperarm_twist_L"
                                     position: Qt.vector3d(-4.47035e-08, -2.98023e-08, 0)
                                 }
                             }
                         }
                         Node {
                             id: rightShoulder
+                            objectName: "RightShoulder"
                             position: Qt.vector3d(-3.26479e-09, -2.23517e-08, 0.138698)
                             Node {
                                 id: rightArm
+                                objectName: "RightArm"
                                 position: Qt.vector3d(-0.178899, -6.16014e-05, -0.000299692)
                                 Node {
                                     id: rightForeArm
+                                    objectName: "RightForeArm"
                                     position: Qt.vector3d(-0.255372, -5.96046e-08, 0)
                                     Node {
                                         id: rightHand
+                                        objectName: "RightHand"
                                         position: Qt.vector3d(-0.269843, 0, 2.38419e-06)
                                         Node {
                                             id: rightHandThumb1
+                                            objectName: "RightHandThumb1"
                                             position: Qt.vector3d(-0.0240955, -0.0258118, -0.0155213)
                                             rotation: Qt.quaternion(0.675223, -0.548055, -8.8274e-08, -0.49367)
                                             scale: Qt.vector3d(1, 1, 1)
                                             Node {
                                                 id: rightHandThumb2
+                                                objectName: "RightHandThumb2"
                                                 position: Qt.vector3d(-0.00319002, -9.42033e-07, -0.0302249)
                                                 rotation: Qt.quaternion(1, 9.54419e-06, 4.79072e-06, 2.46149e-06)
                                                 scale: Qt.vector3d(1, 1, 1)
                                                 Node {
                                                     id: rightHandThumb3
+                                                    objectName: "RightHandThumb3"
                                                     position: Qt.vector3d(-0.00291804, -1.89152e-06, -0.027652)
                                                     rotation: Qt.quaternion(1, 7.95163e-06, 1.29081e-05, -7.20099e-06)
                                                 }
@@ -458,16 +515,20 @@ Node {
                                         }
                                         Node {
                                             id: rightHandIndex
+                                            objectName: "RightHandIndex"
                                             position: Qt.vector3d(-0.0283569, -0.0121126, -0.0111477)
                                             Node {
                                                 id: rightHandIndex1
+                                                objectName: "RightHandIndex1"
                                                 position: Qt.vector3d(-0.0597462, -0.00857229, 0.00594926)
                                                 rotation: Qt.quaternion(0, 0, 0, 1)
                                                 Node {
                                                     id: rightHandIndex2
+                                                    objectName: "RightHandIndex2"
                                                     position: Qt.vector3d(0.0329947, 7.45058e-09, -1.19209e-07)
                                                     Node {
                                                         id: rightHandIndex3
+                                                        objectName: "RightHandIndex3"
                                                         position: Qt.vector3d(0.0221887, 1.86265e-09, 1.19209e-07)
                                                     }
                                                 }
@@ -475,16 +536,20 @@ Node {
                                         }
                                         Node {
                                             id: rightHandMiddle
+                                            objectName: "RightHandMiddle"
                                             position: Qt.vector3d(-0.0299744, 0.00496714, -0.00621736)
                                             Node {
                                                 id: rightHandMiddle1
+                                                objectName: "RightHandMiddle1"
                                                 position: Qt.vector3d(-0.0646919, -0.00160855, 0.00473952)
                                                 rotation: Qt.quaternion(0, 0, 0, 1)
                                                 Node {
                                                     id: rightHandMiddle2
+                                                    objectName: "RightHandMiddle2"
                                                     position: Qt.vector3d(0.0317359, 0, 2.38419e-07)
                                                     Node {
                                                         id: rightHandMiddle3
+                                                        objectName: "RightHandMiddle3"
                                                         position: Qt.vector3d(0.0232731, 0, 0)
                                                     }
                                                 }
@@ -492,16 +557,20 @@ Node {
                                         }
                                         Node {
                                             id: rightHandRing
+                                            objectName: "RightHandRing"
                                             position: Qt.vector3d(-0.0325339, 0.0261922, -0.00411105)
                                             Node {
                                                 id: rightHandRing1
+                                                objectName: "RightHandRing1"
                                                 position: Qt.vector3d(-0.0492074, 0.000482008, 0.000155091)
                                                 rotation: Qt.quaternion(0, 0, 0, 1)
                                                 Node {
                                                     id: rightHandRing2
+                                                    objectName: "RightHandRing2"
                                                     position: Qt.vector3d(0.0288431, -1.11759e-08, 0)
                                                     Node {
                                                         id: rightHandRing3
+                                                        objectName: "RightHandRing3"
                                                         position: Qt.vector3d(0.0247866, 0, 0)
                                                     }
                                                 }
@@ -509,16 +578,20 @@ Node {
                                         }
                                         Node {
                                             id: rightHandPinky
+                                            objectName: "RightHandPinky"
                                             position: Qt.vector3d(-0.0328075, 0.0428612, -0.00580001)
                                             Node {
                                                 id: rightHandPinky1
+                                                objectName: "RightHandPinky1"
                                                 position: Qt.vector3d(-0.0359852, 0.000349201, -0.00413883)
                                                 rotation: Qt.quaternion(0, 0, 0, 1)
                                                 Node {
                                                     id: rightHandPinky2
+                                                    objectName: "RightHandPinky2"
                                                     position: Qt.vector3d(0.0211114, 0, -2.38419e-07)
                                                     Node {
                                                         id: rightHandPinky3
+                                                        objectName: "RightHandPinky3"
                                                         position: Qt.vector3d(0.0189454, 0, 1.19209e-07)
                                                     }
                                                 }
@@ -527,29 +600,35 @@ Node {
                                     }
                                     Node {
                                         id: lowerarm_twist_R
+                                        objectName: "lowerarm_twist_R"
                                         position: Qt.vector3d(2.08616e-07, 2.98023e-08, -0.000300527)
                                     }
                                 }
                                 Node {
                                     id: upperarm_twist_R
+                                    objectName: "upperarm_twist_R"
                                     position: Qt.vector3d(4.47035e-08, -2.98023e-08, 0)
                                 }
                             }
                         }
                         Node {
                             id: neck_base
+                            objectName: "Neck_base"
                             position: Qt.vector3d(3.15022e-09, -2.23517e-08, 0.138698)
                             Node {
                                 id: head
+                                objectName: "Head"
                                 position: Qt.vector3d(2.16361e-09, -7.45058e-09, 0.0952601)
                             }
                         }
                         Node {
                             id: breast_L
+                            objectName: "breast_L"
                             position: Qt.vector3d(0.0873697, 0.0411352, 0.0115459)
                         }
                         Node {
                             id: breast_R
+                            objectName: "breast_R"
                             position: Qt.vector3d(-0.0873697, 0.0411352, 0.0115459)
                         }
                     }
